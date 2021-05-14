@@ -1,0 +1,8 @@
+type UserMVC @entity {
+    id: ID! @id
+    email: String! @column
+}
+
+type Query {
+    allUsers: [UserMVC]!
+}
