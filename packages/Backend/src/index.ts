@@ -13,6 +13,7 @@ const apolloServer = new ApolloServer({
   typeDefs: [DIRECTIVES, typeDefs],
   resolvers,
 });
+
 const runServer = async () => {
   const { url } = await apolloServer.listen();
   return url;

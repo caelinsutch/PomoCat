@@ -1,8 +1,80 @@
+type Query {
+    allUsers: [UserMVC]!
+    user(id: String!): UserMVC
+}
+
+type Mutation {
+    register(email: String!, password: String!): UserMVC!
+    login(email: String!, password: String!): LoginResult
+    updateUser(id: String!, data: UserInput!): UserMVC
+}
+
+type LoginResult {
+    user: UserMVC!
+    token: String!
+}
+
+input UserInput {
+    email: String
+    settings: SettingsInput
+    analytics: AnalyticsInput
+}
+
 type UserMVC @entity {
     id: ID! @id
     email: String! @column
+    password: String! @column
+    settings: Settings! @column
+    task: [Task]! @column
+    analytics: Analytics! @column
+    timer: Timer @column
 }
 
-type Query {
-    allUsers: [UserMVC]!
+type Settings @entity(embedded: true) {
+    pomoLength: Int! @column
+    shortBreakLength: Int! @column
+    longBreakLength: Int! @column
+    isAlarmSound: Boolean! @column
+}
+
+input SettingsInput {
+    pomoLength: Int
+    shortBreakLength: Int
+    longBreakLength: Int
+    isAlarmSound: Boolean
+}
+
+type Task @entity(embedded: true) {
+    name: String! @column
+    numPomos: Int! @column
+    createdAt: String! @column
+    completedPomos: Int! @column
+    isCompleted: Boolean! @column
+}
+
+type Analytics @entity(embedded: true) {
+    pomosFinished: Int! @column
+    daysLoggedPomos: Int! @column
+    lastDayLoggedPomo: String @column
+    dayStreak: Int! @column
+}
+
+input AnalyticsInput {
+    pomosFinished: Int
+    daysLoggedPomos: Int
+    lastDayLoggedPomo: String
+    dayStreak: Int
+}
+
+type Timer @entity(embedded: true) {
+    startTime: String! @column
+    pausedTime: String! @column
+    elapsedBeforePaused: String! @column
+    type: TimerType! @column
+}
+
+enum TimerType {
+    Pomodoro
+    ShortBreak
+    LongBreak
 }

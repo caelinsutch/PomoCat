@@ -8,6 +8,10 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
   { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
   { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = {
+  [X in Exclude<keyof T, K>]?: T[X];
+} &
+  { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -17,13 +21,104 @@ export type Scalars = {
   Float: number;
 };
 
+export type Analytics = {
+  pomosFinished: Scalars["Int"];
+  daysLoggedPomos: Scalars["Int"];
+  lastDayLoggedPomo?: Maybe<Scalars["String"]>;
+  dayStreak: Scalars["Int"];
+};
+
+export type AnalyticsInput = {
+  pomosFinished?: Maybe<Scalars["Int"]>;
+  daysLoggedPomos?: Maybe<Scalars["Int"]>;
+  lastDayLoggedPomo?: Maybe<Scalars["String"]>;
+  dayStreak?: Maybe<Scalars["Int"]>;
+};
+
+export type LoginResult = {
+  user: UserMvc;
+  token: Scalars["String"];
+};
+
+export type Mutation = {
+  register: UserMvc;
+  login?: Maybe<LoginResult>;
+  updateUser?: Maybe<UserMvc>;
+};
+
+export type MutationRegisterArgs = {
+  email: Scalars["String"];
+  password: Scalars["String"];
+};
+
+export type MutationLoginArgs = {
+  email: Scalars["String"];
+  password: Scalars["String"];
+};
+
+export type MutationUpdateUserArgs = {
+  id: Scalars["String"];
+  data: UserInput;
+};
+
 export type Query = {
   allUsers: Array<Maybe<UserMvc>>;
+  user?: Maybe<UserMvc>;
+};
+
+export type QueryUserArgs = {
+  id: Scalars["String"];
+};
+
+export type Settings = {
+  pomoLength: Scalars["Int"];
+  shortBreakLength: Scalars["Int"];
+  longBreakLength: Scalars["Int"];
+  isAlarmSound: Scalars["Boolean"];
+};
+
+export type SettingsInput = {
+  pomoLength?: Maybe<Scalars["Int"]>;
+  shortBreakLength?: Maybe<Scalars["Int"]>;
+  longBreakLength?: Maybe<Scalars["Int"]>;
+  isAlarmSound?: Maybe<Scalars["Boolean"]>;
+};
+
+export type Task = {
+  name: Scalars["String"];
+  numPomos: Scalars["Int"];
+  createdAt: Scalars["String"];
+  completedPomos: Scalars["Int"];
+  isCompleted: Scalars["Boolean"];
+};
+
+export type Timer = {
+  startTime: Scalars["String"];
+  pausedTime: Scalars["String"];
+  elapsedBeforePaused: Scalars["String"];
+  type: TimerType;
+};
+
+export enum TimerType {
+  Pomodoro = "Pomodoro",
+  ShortBreak = "ShortBreak",
+  LongBreak = "LongBreak",
+}
+
+export type UserInput = {
+  email?: Maybe<Scalars["String"]>;
+  settings?: Maybe<SettingsInput>;
+  analytics?: Maybe<AnalyticsInput>;
 };
 
 export type UserMvc = {
   id: Scalars["ID"];
   email: Scalars["String"];
+  password: Scalars["String"];
+  settings: Settings;
+  task: Array<Maybe<Task>>;
+  analytics: Analytics;
+  timer?: Maybe<Timer>;
 };
 
 export type AdditionalEntityFields = {
@@ -32,9 +127,43 @@ export type AdditionalEntityFields = {
 };
 
 import { ObjectID } from "mongodb";
+export type AnalyticsDbObject = {
+  pomosFinished: number;
+  daysLoggedPomos: number;
+  lastDayLoggedPomo?: Maybe<string>;
+  dayStreak: number;
+};
+
+export type SettingsDbObject = {
+  pomoLength: number;
+  shortBreakLength: number;
+  longBreakLength: number;
+  isAlarmSound: boolean;
+};
+
+export type TaskDbObject = {
+  name: string;
+  numPomos: number;
+  createdAt: string;
+  completedPomos: number;
+  isCompleted: boolean;
+};
+
+export type TimerDbObject = {
+  startTime: string;
+  pausedTime: string;
+  elapsedBeforePaused: string;
+  type: string;
+};
+
 export type UserMvcDbObject = {
   _id: ObjectID;
   email: string;
+  password: string;
+  settings: Settings;
+  task: Array<Maybe<Task>>;
+  analytics: Analytics;
+  timer?: Maybe<Timer>;
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -153,22 +282,43 @@ export type DirectiveResolverFn<
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  Analytics: ResolverTypeWrapper<Analytics>;
+  Int: ResolverTypeWrapper<Scalars["Int"]>;
+  String: ResolverTypeWrapper<Scalars["String"]>;
+  AnalyticsInput: AnalyticsInput;
+  LoginResult: ResolverTypeWrapper<LoginResult>;
+  Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
+  Settings: ResolverTypeWrapper<Settings>;
+  Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
+  SettingsInput: SettingsInput;
+  Task: ResolverTypeWrapper<Task>;
+  Timer: ResolverTypeWrapper<Timer>;
+  TimerType: TimerType;
+  UserInput: UserInput;
   UserMVC: ResolverTypeWrapper<UserMvc>;
   ID: ResolverTypeWrapper<Scalars["ID"]>;
-  String: ResolverTypeWrapper<Scalars["String"]>;
   AdditionalEntityFields: AdditionalEntityFields;
-  Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  Analytics: Analytics;
+  Int: Scalars["Int"];
+  String: Scalars["String"];
+  AnalyticsInput: AnalyticsInput;
+  LoginResult: LoginResult;
+  Mutation: {};
   Query: {};
+  Settings: Settings;
+  Boolean: Scalars["Boolean"];
+  SettingsInput: SettingsInput;
+  Task: Task;
+  Timer: Timer;
+  UserInput: UserInput;
   UserMVC: UserMvc;
   ID: Scalars["ID"];
-  String: Scalars["String"];
   AdditionalEntityFields: AdditionalEntityFields;
-  Boolean: Scalars["Boolean"];
 };
 
 export type UnionDirectiveArgs = {
@@ -252,6 +402,54 @@ export type MapDirectiveResolver<
   Args = MapDirectiveArgs
 > = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
+export type AnalyticsResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["Analytics"] = ResolversParentTypes["Analytics"]
+> = {
+  pomosFinished?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  daysLoggedPomos?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  lastDayLoggedPomo?: Resolver<
+    Maybe<ResolversTypes["String"]>,
+    ParentType,
+    ContextType
+  >;
+  dayStreak?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LoginResultResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["LoginResult"] = ResolversParentTypes["LoginResult"]
+> = {
+  user?: Resolver<ResolversTypes["UserMVC"], ParentType, ContextType>;
+  token?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MutationResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"]
+> = {
+  register?: Resolver<
+    ResolversTypes["UserMVC"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationRegisterArgs, "email" | "password">
+  >;
+  login?: Resolver<
+    Maybe<ResolversTypes["LoginResult"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationLoginArgs, "email" | "password">
+  >;
+  updateUser?: Resolver<
+    Maybe<ResolversTypes["UserMVC"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateUserArgs, "id" | "data">
+  >;
+};
+
 export type QueryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Query"] = ResolversParentTypes["Query"]
@@ -261,6 +459,50 @@ export type QueryResolvers<
     ParentType,
     ContextType
   >;
+  user?: Resolver<
+    Maybe<ResolversTypes["UserMVC"]>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryUserArgs, "id">
+  >;
+};
+
+export type SettingsResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["Settings"] = ResolversParentTypes["Settings"]
+> = {
+  pomoLength?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  shortBreakLength?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  longBreakLength?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  isAlarmSound?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TaskResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["Task"] = ResolversParentTypes["Task"]
+> = {
+  name?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  numPomos?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  completedPomos?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  isCompleted?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TimerResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["Timer"] = ResolversParentTypes["Timer"]
+> = {
+  startTime?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  pausedTime?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  elapsedBeforePaused?: Resolver<
+    ResolversTypes["String"],
+    ParentType,
+    ContextType
+  >;
+  type?: Resolver<ResolversTypes["TimerType"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UserMvcResolvers<
@@ -269,11 +511,26 @@ export type UserMvcResolvers<
 > = {
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   email?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  password?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  settings?: Resolver<ResolversTypes["Settings"], ParentType, ContextType>;
+  task?: Resolver<
+    Array<Maybe<ResolversTypes["Task"]>>,
+    ParentType,
+    ContextType
+  >;
+  analytics?: Resolver<ResolversTypes["Analytics"], ParentType, ContextType>;
+  timer?: Resolver<Maybe<ResolversTypes["Timer"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
+  Analytics?: AnalyticsResolvers<ContextType>;
+  LoginResult?: LoginResultResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Settings?: SettingsResolvers<ContextType>;
+  Task?: TaskResolvers<ContextType>;
+  Timer?: TimerResolvers<ContextType>;
   UserMVC?: UserMvcResolvers<ContextType>;
 };
 

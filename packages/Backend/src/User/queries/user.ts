@@ -1,0 +1,13 @@
+import { ObjectID } from "mongodb";
+import { getUserCollection, getUserMvcFromDbObject } from "../user.helpers";
+import { QueryResolvers } from "../../DAO";
+
+const user: QueryResolvers["user"] = async (_, { id }) => {
+  const userCollection = await getUserCollection();
+  const dbObject = await userCollection.findOne({
+    _id: ObjectID.createFromHexString(id),
+  });
+  return getUserMvcFromDbObject(dbObject);
+};
+
+export default user;

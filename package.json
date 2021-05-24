@@ -1,6 +1,9 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "generate": "lerna run generate"
+  },
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@graphql-codegen/add": "^2.0.2",
@@ -30,7 +33,6 @@
   },
   "dependencies": {
     "backend": "file:packages\\Backend",
-    "shared": "file:packages\\Shared",
-    "undefined": "file:packages\\PomoCatMobile"
+    "shared": "file:packages\\Shared"
   }
 }

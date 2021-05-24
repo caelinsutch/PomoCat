@@ -1,6 +1,5 @@
 import queries from "./queries";
+import mutations from "./mutations";
 
-const userQueries = queries;
-const userMutations = {};
-
-export { userQueries, userMutations };
+export const userQueries = queries;
+export const userMutations = mutations;
