@@ -6,19 +6,18 @@ import { checkAuth } from "../../Helpers";
 
 const updateUser: MutationResolvers<ContextType>["updateUser"] = async (
   _,
-  { id, data },
+  { data },
   context
 ) => {
   checkAuth(context);
 
   const userCollection = await getUserCollection();
-  const previous = await userCollection.findOne({
-    _id: ObjectID.createFromHexString(id),
-  });
+
+  const previous = context.user;
 
   const res = await userCollection.findOneAndUpdate(
     {
-      _id: ObjectID.createFromHexString(id),
+      _id: ObjectID.createFromHexString(previous.id),
     },
     {
       $set: {
@@ -38,7 +37,6 @@ const updateUser: MutationResolvers<ContextType>["updateUser"] = async (
       upsert: true,
     }
   );
-  console.log(res);
 
   return getUserMvcFromDbObject(res.value);
 };

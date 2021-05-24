@@ -6,7 +6,10 @@ type Query {
 type Mutation {
     register(email: String!, password: String!): UserMVC!
     login(email: String!, password: String!): LoginResult
-    updateUser(id: String!, data: UserInput!): UserMVC
+    updateUser(data: UserInput!): UserMVC
+    startTimer(type: TimerType): Boolean!
+    stopTimer: Boolean!
+    pauseTimer: Boolean!
 }
 
 type LoginResult {
@@ -27,7 +30,7 @@ type UserMVC @entity {
     settings: Settings! @column
     task: [Task]! @column
     analytics: Analytics! @column
-    timer: Timer @column
+    timer: Timer! @column
 }
 
 type Settings @entity(embedded: true) {
@@ -67,10 +70,10 @@ input AnalyticsInput {
 }
 
 type Timer @entity(embedded: true) {
-    startTime: String! @column
-    pausedTime: String! @column
-    elapsedBeforePaused: String! @column
-    type: TimerType! @column
+    endTime: String @column
+    isPaused: Boolean @column
+    pausedTimeLeftMs: Int @column
+    type: TimerType @column
 }
 
 enum TimerType {

@@ -44,6 +44,9 @@ export type Mutation = {
   register: UserMvc;
   login?: Maybe<LoginResult>;
   updateUser?: Maybe<UserMvc>;
+  startTimer: Scalars["Boolean"];
+  stopTimer: Scalars["Boolean"];
+  pauseTimer: Scalars["Boolean"];
 };
 
 export type MutationRegisterArgs = {
@@ -57,8 +60,11 @@ export type MutationLoginArgs = {
 };
 
 export type MutationUpdateUserArgs = {
-  id: Scalars["String"];
   data: UserInput;
+};
+
+export type MutationStartTimerArgs = {
+  type?: Maybe<TimerType>;
 };
 
 export type Query = {
@@ -93,10 +99,10 @@ export type Task = {
 };
 
 export type Timer = {
-  startTime: Scalars["String"];
-  pausedTime: Scalars["String"];
-  elapsedBeforePaused: Scalars["String"];
-  type: TimerType;
+  endTime?: Maybe<Scalars["String"]>;
+  isPaused?: Maybe<Scalars["Boolean"]>;
+  pausedTimeLeftMs?: Maybe<Scalars["Int"]>;
+  type?: Maybe<TimerType>;
 };
 
 export enum TimerType {
@@ -118,7 +124,7 @@ export type UserMvc = {
   settings: Settings;
   task: Array<Maybe<Task>>;
   analytics: Analytics;
-  timer?: Maybe<Timer>;
+  timer: Timer;
 };
 
 export type AdditionalEntityFields = {
@@ -150,10 +156,10 @@ export type TaskDbObject = {
 };
 
 export type TimerDbObject = {
-  startTime: string;
-  pausedTime: string;
-  elapsedBeforePaused: string;
-  type: string;
+  endTime?: Maybe<string>;
+  isPaused?: Maybe<boolean>;
+  pausedTimeLeftMs?: Maybe<number>;
+  type?: Maybe<string>;
 };
 
 export type UserMvcDbObject = {
@@ -163,7 +169,7 @@ export type UserMvcDbObject = {
   settings: Settings;
   task: Array<Maybe<Task>>;
   analytics: Analytics;
-  timer?: Maybe<Timer>;
+  timer: Timer;
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -288,9 +294,9 @@ export type ResolversTypes = {
   AnalyticsInput: AnalyticsInput;
   LoginResult: ResolverTypeWrapper<LoginResult>;
   Mutation: ResolverTypeWrapper<{}>;
+  Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
   Query: ResolverTypeWrapper<{}>;
   Settings: ResolverTypeWrapper<Settings>;
-  Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
   SettingsInput: SettingsInput;
   Task: ResolverTypeWrapper<Task>;
   Timer: ResolverTypeWrapper<Timer>;
@@ -309,9 +315,9 @@ export type ResolversParentTypes = {
   AnalyticsInput: AnalyticsInput;
   LoginResult: LoginResult;
   Mutation: {};
+  Boolean: Scalars["Boolean"];
   Query: {};
   Settings: Settings;
-  Boolean: Scalars["Boolean"];
   SettingsInput: SettingsInput;
   Task: Task;
   Timer: Timer;
@@ -446,8 +452,16 @@ export type MutationResolvers<
     Maybe<ResolversTypes["UserMVC"]>,
     ParentType,
     ContextType,
-    RequireFields<MutationUpdateUserArgs, "id" | "data">
+    RequireFields<MutationUpdateUserArgs, "data">
   >;
+  startTimer?: Resolver<
+    ResolversTypes["Boolean"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationStartTimerArgs, never>
+  >;
+  stopTimer?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  pauseTimer?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
 };
 
 export type QueryResolvers<
@@ -494,14 +508,18 @@ export type TimerResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes["Timer"] = ResolversParentTypes["Timer"]
 > = {
-  startTime?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  pausedTime?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  elapsedBeforePaused?: Resolver<
-    ResolversTypes["String"],
+  endTime?: Resolver<Maybe<ResolversTypes["String"]>, ParentType, ContextType>;
+  isPaused?: Resolver<
+    Maybe<ResolversTypes["Boolean"]>,
     ParentType,
     ContextType
   >;
-  type?: Resolver<ResolversTypes["TimerType"], ParentType, ContextType>;
+  pausedTimeLeftMs?: Resolver<
+    Maybe<ResolversTypes["Int"]>,
+    ParentType,
+    ContextType
+  >;
+  type?: Resolver<Maybe<ResolversTypes["TimerType"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -519,7 +537,7 @@ export type UserMvcResolvers<
     ContextType
   >;
   analytics?: Resolver<ResolversTypes["Analytics"], ParentType, ContextType>;
-  timer?: Resolver<Maybe<ResolversTypes["Timer"]>, ParentType, ContextType>;
+  timer?: Resolver<ResolversTypes["Timer"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

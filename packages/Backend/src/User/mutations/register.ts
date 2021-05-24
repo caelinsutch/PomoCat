@@ -1,5 +1,5 @@
 import { hash } from "bcryptjs";
-import { MutationResolvers } from "../../DAO";
+import { MutationResolvers, UserMvc } from "../../DAO";
 import { salt } from "../../../constants";
 import { getUserCollection, getUserMvcFromDbObject } from "../user.helpers";
 
@@ -9,7 +9,7 @@ const register: MutationResolvers["register"] = async (
 ) => {
   const userCollection = await getUserCollection();
   const hashedPassword = await hash(password, salt);
-  const data = {
+  const data: Omit<UserMvc, "id"> = {
     email,
     password: hashedPassword,
     analytics: {
@@ -23,6 +23,7 @@ const register: MutationResolvers["register"] = async (
       pomoLength: 25,
       shortBreakLength: 5,
     },
+    timer: {},
     task: [],
   };
 
