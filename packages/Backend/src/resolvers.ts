@@ -1,9 +1,12 @@
 import { Resolvers } from "./DAO";
-import { userQueries } from "./User";
+import { userMutations, userQueries } from "./User";
 
 const resolvers: Resolvers = {
   Query: {
     ...userQueries,
+  },
+  Mutation: {
+    ...userMutations,
   },
 };
 

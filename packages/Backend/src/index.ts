@@ -2,6 +2,7 @@ import { ApolloServer } from "apollo-server";
 import * as path from "path";
 import { DIRECTIVES } from "@graphql-codegen/typescript-mongodb";
 import resolvers from "./resolvers";
+import context from "./context";
 
 const { readFileSync } = require("fs");
 
@@ -12,6 +13,7 @@ const typeDefs = readFileSync(
 const apolloServer = new ApolloServer({
   typeDefs: [DIRECTIVES, typeDefs],
   resolvers,
+  context,
 });
 
 const runServer = async () => {

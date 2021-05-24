@@ -1,14 +1,22 @@
 import { ObjectID } from "mongodb";
 import { MutationResolvers } from "../../DAO";
 import { getUserCollection, getUserMvcFromDbObject } from "../user.helpers";
+import { ContextType } from "../../context";
+import { checkAuth } from "../../Helpers";
 
-const updateUser: MutationResolvers["updateUser"] = async (_, { id, data }) => {
+const updateUser: MutationResolvers<ContextType>["updateUser"] = async (
+  _,
+  { id, data },
+  context
+) => {
+  checkAuth(context);
+
   const userCollection = await getUserCollection();
   const previous = await userCollection.findOne({
     _id: ObjectID.createFromHexString(id),
   });
 
-  const dbObject = await userCollection.findOneAndUpdate(
+  const res = await userCollection.findOneAndUpdate(
     {
       _id: ObjectID.createFromHexString(id),
     },
@@ -27,10 +35,12 @@ const updateUser: MutationResolvers["updateUser"] = async (_, { id, data }) => {
     },
     {
       returnOriginal: false,
+      upsert: true,
     }
   );
+  console.log(res);
 
-  return getUserMvcFromDbObject(dbObject.value);
+  return getUserMvcFromDbObject(res.value);
 };
 
 export default updateUser;
