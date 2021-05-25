@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ImageBackground, Image } from "react-native";
+import { Controller, useForm } from "react-hook-form";
 import {
   Box,
   Illustration,
@@ -13,9 +14,20 @@ import TopBackground from "../../../assets/TopBackground.png";
 // @ts-ignore
 import BottomBackground from "../../../assets/BottomBackground.png";
 import HyperLink from "../../Components/HyperLink";
+import { emailRegexPattern } from "../../constants";
 
 const AuthScreen: React.FC = () => {
   const [isLogin, setIsLogin] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
 
   return (
     <ScreenContainer>
@@ -44,14 +56,52 @@ const AuthScreen: React.FC = () => {
               ? "Login to your account"
               : "Get started with PomoCat today!"}
           </Text>
+
           <Box marginTop="xl">
-            <Input label="Email" placeholder="Email" />
+            <Controller
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  label="Email"
+                  placeholder="Email"
+                  value={value}
+                  onChangeText={onChange}
+                  variant={errors.email ? "error" : undefined}
+                  message={
+                    errors.email ? "This must be a valid email" : undefined
+                  }
+                />
+              )}
+              name="email"
+              rules={{ required: true, pattern: emailRegexPattern }}
+              defaultValue=""
+            />
           </Box>
+
           <Box marginTop="xl">
-            <Input label="Password" placeholder="Password" />
+            <Controller
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  label="Password"
+                  placeholder="Password"
+                  value={value}
+                  onChangeText={onChange}
+                  variant={errors.password ? "error" : undefined}
+                  secureTextEntry
+                  message={
+                    errors.password ? "This field is required" : undefined
+                  }
+                />
+              )}
+              name="password"
+              rules={{ required: true }}
+              defaultValue=""
+            />
           </Box>
+
           <Box marginTop="xl">
-            <Button onPress={() => console.log("Login")}>
+            <Button onPress={handleSubmit(onSubmit)}>
               {isLogin ? "Login" : "Signup"}
             </Button>
           </Box>

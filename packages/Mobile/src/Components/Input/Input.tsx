@@ -66,12 +66,13 @@ const Input: React.FC<InputProps> = ({
         </Box>
       )}
       <InputBase
-        {...props}
+        autoCapitalize="none"
         marginTop="xs"
         placeholderTextColor={theme.colors[textColor()]}
         editable={props.variant !== "disabled"}
+        {...props}
       />
-      {(label && props.variant === "warning") || props.variant === "error" ? (
+      {props.variant === "warning" || props.variant === "error" ? (
         <Box marginTop="xs">
           <Text color={textColor()}>{message}</Text>
         </Box>
