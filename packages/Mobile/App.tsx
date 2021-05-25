@@ -11,9 +11,12 @@ import {
 } from "@expo-google-fonts/inter";
 import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
+import { RootSiblingParent } from "react-native-root-siblings";
 
+import { ApolloProvider } from "@apollo/client";
 import theme from "./src/Theme";
 import { AuthScreen } from "./src/Screens";
+import apolloClient from "./src/GraphQL/apolloClient";
 
 const Stack = createStackNavigator();
 
@@ -30,17 +33,21 @@ const App = () => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Auth"
-            component={AuthScreen}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </ThemeProvider>
+    <ApolloProvider client={apolloClient}>
+      <ThemeProvider theme={theme}>
+        <RootSiblingParent>
+          <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen
+                name="Auth"
+                component={AuthScreen}
+                options={{ headerShown: false }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </RootSiblingParent>
+      </ThemeProvider>
+    </ApolloProvider>
   );
 };
 

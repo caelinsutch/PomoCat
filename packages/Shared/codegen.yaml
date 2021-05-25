@@ -17,7 +17,7 @@ generates:
       skipTypename: true
   ../Mobile/src/GraphQL/types.ts:
     documents: # Provide list of files that needs to be checked for queries
-      - ../PomoCatMobile/src/**/*.ts*
+      - ../Mobile/src/**/*.ts*
     plugins:
       - typescript
       - typescript-operations

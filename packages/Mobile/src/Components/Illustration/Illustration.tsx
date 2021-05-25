@@ -1,6 +1,6 @@
-// @ts-ignore
 import { Image } from "react-native";
 import React from "react";
+// @ts-ignore
 import LogoWhite from "../../../assets/LogoWhite.png";
 
 const illustrations = {

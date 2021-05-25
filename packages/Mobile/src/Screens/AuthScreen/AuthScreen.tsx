@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { ImageBackground, Image } from "react-native";
 import { Controller, useForm } from "react-hook-form";
+import Toast from "react-native-root-toast";
+
+import { useTheme } from "@shopify/restyle";
 import {
   Box,
   Illustration,
@@ -15,9 +18,13 @@ import TopBackground from "../../../assets/TopBackground.png";
 import BottomBackground from "../../../assets/BottomBackground.png";
 import HyperLink from "../../Components/HyperLink";
 import { emailRegexPattern } from "../../constants";
+import { useLogin } from "../../Hooks";
+import { Theme } from "../../Theme";
 
 const AuthScreen: React.FC = () => {
+  const theme = useTheme<Theme>();
   const [isLogin, setIsLogin] = useState(false);
+  const { login, loading } = useLogin();
 
   const {
     control,
@@ -25,8 +32,28 @@ const AuthScreen: React.FC = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    // if (!data.email || !data.password || Object.keys(errors).length > 0) {
+    //   return;
+    // }
+    if (isLogin) {
+      try {
+        await login(data.email, data.password);
+        Toast.show("Logged in :)", {
+          backgroundColor: theme.colors.primary500,
+          textStyle: {
+            fontSize: 18,
+          },
+        });
+      } catch (e) {
+        Toast.show(e.toString(), {
+          backgroundColor: theme.colors.red500,
+          textStyle: {
+            fontSize: 18,
+          },
+        });
+      }
+    }
   };
 
   return (
@@ -101,7 +128,7 @@ const AuthScreen: React.FC = () => {
           </Box>
 
           <Box marginTop="xl">
-            <Button onPress={handleSubmit(onSubmit)}>
+            <Button onPress={handleSubmit(onSubmit)} loading={loading}>
               {isLogin ? "Login" : "Signup"}
             </Button>
           </Box>
