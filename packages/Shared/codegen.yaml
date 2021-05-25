@@ -15,19 +15,19 @@ generates:
     config:
       enumsAsString: true
       skipTypename: true
-#  ../PomoCatMobile/src/GraphQL/types.ts:
-#    documents: # Provide list of files that needs to be checked for queries
-#      - ../PomoCatMobile/src/**/*.ts*
-#    plugins:
-#      - typescript
-#      - typescript-operations
-#      - typescript-react-apollo
-#      - add:
-#          content: '/* eslint-disable */'
-#    config:
-#      withHooks: true # We will be using React Hooks so we disable React Components
-#      withHOC: false
-#      withComponent: false
-#      skipTypename: true
-#      apolloReactCommonImportFrom: "@apollo/client"
-#      apolloReactHooksImportFrom: "@apollo/client"
+  ../Mobile/src/GraphQL/types.ts:
+    documents: # Provide list of files that needs to be checked for queries
+      - ../PomoCatMobile/src/**/*.ts*
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+      - add:
+          content: '/* eslint-disable */'
+    config:
+      withHooks: true # We will be using React Hooks so we disable React Components
+      withHOC: false
+      withComponent: false
+      skipTypename: true
+      apolloReactCommonImportFrom: "@apollo/client"
+      apolloReactHooksImportFrom: "@apollo/client"

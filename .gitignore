@@ -1,3 +1,12 @@
 node_modules
 *.log
 .idea
+.expo-shared/
+.gitignore
+App.tsx
+app.json
+assets/
+babel.config.js
+package.json
+tsconfig.json
+yarn.lock
