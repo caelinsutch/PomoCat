@@ -11,6 +11,7 @@ module.exports = {
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:import/typescript",
+    "plugin:@typescript-eslint/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -28,5 +29,8 @@ module.exports = {
     "react/jsx-props-no-spreading": 0,
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": ["error"],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
+    " @typescript-eslint/ban-ts-comment": "off",
   },
 };

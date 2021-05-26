@@ -1,6 +1,8 @@
 import { hash } from "bcryptjs";
+import { sign } from "jsonwebtoken";
+import dayjs from "dayjs";
 import { MutationResolvers, UserMvc } from "../../DAO";
-import { salt } from "../../../constants";
+import { salt, secret } from "../../../constants";
 import { getUserCollection, getUserMvcFromDbObject } from "../user.helpers";
 
 const register: MutationResolvers["register"] = async (
@@ -25,14 +27,20 @@ const register: MutationResolvers["register"] = async (
     },
     timer: {},
     task: [],
+    createdAt: dayjs().toISOString(),
   };
 
   const document = await userCollection.insertOne(data);
-
-  return getUserMvcFromDbObject({
+  const user = getUserMvcFromDbObject({
     _id: document.insertedId,
     ...data,
   });
+  const token = sign({ userId: user.id }, secret);
+
+  return {
+    user,
+    token,
+  };
 };
 
 export default register;

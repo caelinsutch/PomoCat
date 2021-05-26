@@ -4,15 +4,15 @@ type Query {
 }
 
 type Mutation {
-    register(email: String!, password: String!): UserMVC!
-    login(email: String!, password: String!): LoginResult
+    register(email: String!, password: String!): AuthResult!
+    login(email: String!, password: String!): AuthResult
     updateUser(data: UserInput!): UserMVC
     startTimer(type: TimerType): Boolean!
     stopTimer: Boolean!
     pauseTimer: Boolean!
 }
 
-type LoginResult {
+type AuthResult {
     user: UserMVC!
     token: String!
 }
@@ -31,6 +31,7 @@ type UserMVC @entity {
     task: [Task]! @column
     analytics: Analytics! @column
     timer: Timer! @column
+    createdAt: String! @column
 }
 
 type Settings @entity(embedded: true) {

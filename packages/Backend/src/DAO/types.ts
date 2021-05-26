@@ -35,14 +35,14 @@ export type AnalyticsInput = {
   dayStreak?: Maybe<Scalars["Int"]>;
 };
 
-export type LoginResult = {
+export type AuthResult = {
   user: UserMvc;
   token: Scalars["String"];
 };
 
 export type Mutation = {
-  register: UserMvc;
-  login?: Maybe<LoginResult>;
+  register: AuthResult;
+  login?: Maybe<AuthResult>;
   updateUser?: Maybe<UserMvc>;
   startTimer: Scalars["Boolean"];
   stopTimer: Scalars["Boolean"];
@@ -125,6 +125,7 @@ export type UserMvc = {
   task: Array<Maybe<Task>>;
   analytics: Analytics;
   timer: Timer;
+  createdAt: Scalars["String"];
 };
 
 export type AdditionalEntityFields = {
@@ -170,6 +171,7 @@ export type UserMvcDbObject = {
   task: Array<Maybe<Task>>;
   analytics: Analytics;
   timer: Timer;
+  createdAt: string;
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -292,7 +294,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars["Int"]>;
   String: ResolverTypeWrapper<Scalars["String"]>;
   AnalyticsInput: AnalyticsInput;
-  LoginResult: ResolverTypeWrapper<LoginResult>;
+  AuthResult: ResolverTypeWrapper<AuthResult>;
   Mutation: ResolverTypeWrapper<{}>;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
   Query: ResolverTypeWrapper<{}>;
@@ -313,7 +315,7 @@ export type ResolversParentTypes = {
   Int: Scalars["Int"];
   String: Scalars["String"];
   AnalyticsInput: AnalyticsInput;
-  LoginResult: LoginResult;
+  AuthResult: AuthResult;
   Mutation: {};
   Boolean: Scalars["Boolean"];
   Query: {};
@@ -423,9 +425,9 @@ export type AnalyticsResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type LoginResultResolvers<
+export type AuthResultResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes["LoginResult"] = ResolversParentTypes["LoginResult"]
+  ParentType extends ResolversParentTypes["AuthResult"] = ResolversParentTypes["AuthResult"]
 > = {
   user?: Resolver<ResolversTypes["UserMVC"], ParentType, ContextType>;
   token?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
@@ -437,13 +439,13 @@ export type MutationResolvers<
   ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"]
 > = {
   register?: Resolver<
-    ResolversTypes["UserMVC"],
+    ResolversTypes["AuthResult"],
     ParentType,
     ContextType,
     RequireFields<MutationRegisterArgs, "email" | "password">
   >;
   login?: Resolver<
-    Maybe<ResolversTypes["LoginResult"]>,
+    Maybe<ResolversTypes["AuthResult"]>,
     ParentType,
     ContextType,
     RequireFields<MutationLoginArgs, "email" | "password">
@@ -538,12 +540,13 @@ export type UserMvcResolvers<
   >;
   analytics?: Resolver<ResolversTypes["Analytics"], ParentType, ContextType>;
   timer?: Resolver<ResolversTypes["Timer"], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
   Analytics?: AnalyticsResolvers<ContextType>;
-  LoginResult?: LoginResultResolvers<ContextType>;
+  AuthResult?: AuthResultResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Settings?: SettingsResolvers<ContextType>;
