@@ -4,6 +4,7 @@ import { Controller, useForm } from "react-hook-form";
 import Toast from "react-native-root-toast";
 
 import { useTheme } from "@shopify/restyle";
+import { StackNavigationProp } from "@react-navigation/stack";
 import {
   Box,
   Illustration,
@@ -18,13 +19,19 @@ import TopBackground from "../../../assets/TopBackground.png";
 import BottomBackground from "../../../assets/BottomBackground.png";
 import HyperLink from "../../Components/HyperLink";
 import { emailRegexPattern } from "../../constants";
-import { useLogin } from "../../Hooks";
+import { useLogin, useRegister } from "../../Hooks";
 import { Theme } from "../../Theme";
+import { RootStackParamList } from "../../Routing";
 
-const AuthScreen: React.FC = () => {
+type AuthScreenProps = {
+  navigation: StackNavigationProp<RootStackParamList, "Auth">;
+};
+
+const AuthScreen: React.FC<AuthScreenProps> = ({ navigation }) => {
   const theme = useTheme<Theme>();
   const [isLogin, setIsLogin] = useState(false);
-  const { login, loading } = useLogin();
+  const { login, loading: loginLoading } = useLogin();
+  const { register, loading: registerLoading } = useRegister();
 
   const {
     control,
@@ -33,26 +40,26 @@ const AuthScreen: React.FC = () => {
   } = useForm();
 
   const onSubmit = async (data: any) => {
-    // if (!data.email || !data.password || Object.keys(errors).length > 0) {
-    //   return;
-    // }
-    if (isLogin) {
-      try {
+    try {
+      if (isLogin) {
         await login(data.email, data.password);
-        Toast.show("Logged in :)", {
-          backgroundColor: theme.colors.primary500,
-          textStyle: {
-            fontSize: 18,
-          },
-        });
-      } catch (e) {
-        Toast.show(e.toString(), {
-          backgroundColor: theme.colors.red500,
-          textStyle: {
-            fontSize: 18,
-          },
-        });
+      } else {
+        await register(data.email, data.password);
       }
+      Toast.show(isLogin ? "Logged in :)" : "Registered and logged in :)", {
+        backgroundColor: theme.colors.primary500,
+        textStyle: {
+          fontSize: 18,
+        },
+      });
+      navigation.push("Home");
+    } catch (e) {
+      Toast.show(e.toString(), {
+        backgroundColor: theme.colors.red500,
+        textStyle: {
+          fontSize: 18,
+        },
+      });
     }
   };
 
@@ -128,7 +135,10 @@ const AuthScreen: React.FC = () => {
           </Box>
 
           <Box marginTop="xl">
-            <Button onPress={handleSubmit(onSubmit)} loading={loading}>
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              loading={isLogin ? loginLoading : registerLoading}
+            >
               {isLogin ? "Login" : "Signup"}
             </Button>
           </Box>

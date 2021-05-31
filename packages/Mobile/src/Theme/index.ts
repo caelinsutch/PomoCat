@@ -12,7 +12,7 @@ const theme = createTheme({
     ...palette,
   },
   spacing: {
-    xss: 4,
+    xxs: 4,
     xs: 8,
     sm: 12,
     md: 16,

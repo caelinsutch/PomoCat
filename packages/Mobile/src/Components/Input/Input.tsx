@@ -35,7 +35,7 @@ const Input: React.FC<InputProps> = ({
 }) => {
   const theme = useTheme<Theme>();
 
-  const textColor = (strength: number = 500): keyof Theme["colors"] => {
+  const textColor = (strength = 500): keyof Theme["colors"] => {
     if (props.variant === "error")
       return `red${strength}` as keyof Theme["colors"];
     if (props.variant === "warn")

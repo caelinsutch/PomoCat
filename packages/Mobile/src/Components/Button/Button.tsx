@@ -6,19 +6,19 @@ import Box from "../Box";
 import Text from "../Text";
 
 type ButtonProps = {
-  textColor?: TextProps<Theme>["color"];
   onPress: () => void;
   loading?: boolean;
+  textProps?: TextProps<Theme>;
 } & Partial<BoxProps<Theme>>;
 
 const Button: React.FC<ButtonProps> = ({
   children,
-  textColor = "white",
   onPress,
   loading,
+  textProps,
   ...props
 }) => (
-  <TouchableHighlight underlayColor="white" onPress={onPress}>
+  <TouchableHighlight underlayColor="transparent" onPress={onPress}>
     <Box
       py="md"
       px="xl"
@@ -33,7 +33,7 @@ const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator color="white" />
       ) : (
-        <Text variant="md" color={textColor}>
+        <Text variant="md" color="white" {...textProps}>
           {children}
         </Text>
       )}
