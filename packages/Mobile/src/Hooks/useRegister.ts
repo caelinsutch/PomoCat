@@ -13,7 +13,7 @@ export const registerMutation = () => gql`
       user {
         id
         email
-        task {
+        tasks {
           name
           numPomos
           createdAt

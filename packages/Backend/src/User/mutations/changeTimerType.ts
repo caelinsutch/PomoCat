@@ -1,13 +1,11 @@
-import dayjs from "dayjs";
 import { ObjectID } from "mongodb";
 import { MutationResolvers } from "../../DAO";
-import { ContextType } from "../../context";
 import { checkAuth } from "../../Helpers";
 import { getUserCollection, getUserMvcFromDbObject } from "../user.helpers";
 
-const pauseTimer: MutationResolvers<ContextType>["pauseTimer"] = async (
+const changeTimerType: MutationResolvers["changeTimerType"] = async (
   _,
-  a,
+  { type },
   context
 ) => {
   checkAuth(context);
@@ -17,13 +15,9 @@ const pauseTimer: MutationResolvers<ContextType>["pauseTimer"] = async (
     user: { timer, id },
   } = context;
 
-  // Check if running timer
-  if (!timer.endTime) throw new Error("No running timer!");
-  // Check if timer has already ended
-  if (dayjs(timer.endTime).isBefore(dayjs()))
-    throw new Error("Cannot pause timer that has ended");
-
-  const pausedTimeLeftMs = dayjs(timer.endTime).diff(dayjs(), "ms");
+  if (timer.endTime) {
+    throw new Error("Cannot change timer type while timer is running!");
+  }
 
   const res = await userCollection.findOneAndUpdate(
     {
@@ -32,18 +26,19 @@ const pauseTimer: MutationResolvers<ContextType>["pauseTimer"] = async (
     {
       $set: {
         timer: {
-          isPaused: true,
-          pausedTimeLeftMs,
+          type,
         },
       },
     },
     {
       upsert: true,
+      returnDocument: "after",
     }
   );
+
   const user = getUserMvcFromDbObject(res.value);
 
   return { user };
 };
 
-export default pauseTimer;
+export default changeTimerType;

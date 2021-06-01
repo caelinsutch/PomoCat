@@ -1,15 +1,21 @@
 type Query {
     allUsers: [UserMVC]!
-    user(id: String!): UserMVC
+    user(id: String): UserMVC
+    token: String
 }
 
 type Mutation {
     register(email: String!, password: String!): AuthResult!
     login(email: String!, password: String!): AuthResult
     updateUser(data: UserInput!): UserMVC
-    startTimer(type: TimerType): Boolean!
-    stopTimer: Boolean!
-    pauseTimer: Boolean!
+    startTimer(type: TimerType): GenericResult
+    changeTimerType(type: TimerType!): GenericResult
+    stopTimer: GenericResult
+    pauseTimer: GenericResult
+}
+
+type GenericResult {
+    user: UserMVC!
 }
 
 type AuthResult {
@@ -28,7 +34,7 @@ type UserMVC @entity {
     email: String! @column
     password: String! @column
     settings: Settings! @column
-    task: [Task]! @column
+    tasks: [Task]! @column
     analytics: Analytics! @column
     timer: Timer! @column
     createdAt: String! @column

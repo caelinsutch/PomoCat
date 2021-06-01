@@ -1,14 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import { ImageBackground } from "react-native";
 import { Box, Button, Icon, ScreenContainer, Text } from "../../Components";
 import TabGroup from "../../Components/TabGroup";
-import { HomeScreenMode, homeScreenModeOptions } from "./HomeScreen.constants";
+import { homeScreenModeOptions } from "./HomeScreen.constants";
 // @ts-ignore
 import TopBackground from "../../../assets/TopBackground.png";
 import TaskItem from "../../Components/TaskItem/TaskItem";
+import { useHomeScreen } from "../../Hooks";
+import { TimerType } from "../../GraphQL/types";
 
 const HomeScreen: React.FC = () => {
-  const [mode, setMode] = useState<HomeScreenMode>(HomeScreenMode.Pomodoro);
+  const {
+    handleButtonClick,
+    timerRunning,
+    timeLeft,
+    data,
+    stopTimer,
+    handleTimerTypeChange,
+    timerType,
+  } = useHomeScreen();
+
+  if (!data?.user) {
+    return <Box />;
+  }
 
   return (
     <ScreenContainer>
@@ -25,9 +39,10 @@ const HomeScreen: React.FC = () => {
         <Box flex={1} justifyContent="center" alignItems="center">
           <Box width="100%" paddingHorizontal="lg">
             <TabGroup
-              onSelect={(v) => setMode(v as HomeScreenMode)}
-              selected={mode}
+              onSelect={(v) => handleTimerTypeChange(v as TimerType)}
+              selected={timerType}
               options={homeScreenModeOptions}
+              disabled={timeLeft !== "00:00"}
             />
           </Box>
           <Text
@@ -36,7 +51,7 @@ const HomeScreen: React.FC = () => {
             color="white"
             paddingTop="md"
           >
-            12:34
+            {timeLeft}
           </Text>
           <Text variant="sm" color="gray50">
             Design mobile screens
@@ -51,7 +66,7 @@ const HomeScreen: React.FC = () => {
             <Box flex={1} />
             <Box flex={1} alignItems="center" justifyContent="center">
               <Button
-                onPress={() => console.log("start")}
+                onPress={handleButtonClick}
                 backgroundColor="accent500"
                 py="sm"
                 px="lg"
@@ -60,10 +75,15 @@ const HomeScreen: React.FC = () => {
                   fontFamily: "Inter_700Bold",
                 }}
               >
-                Start
+                {timerRunning ? "Pause" : "Start"}
               </Button>
             </Box>
-            <Box flex={1} alignItems="center" justifyContent="center">
+            <Box
+              flex={1}
+              alignItems="center"
+              justifyContent="center"
+              onTouchEnd={stopTimer}
+            >
               <Icon name="Skip" size={48} color="white" />
             </Box>
           </Box>

@@ -9,17 +9,24 @@ type TabGroupOptions = {
 
 type TabGroupProps = {
   onSelect: (value: string) => void;
-  selected: string;
+  selected?: string;
   options: TabGroupOptions[];
+  disabled?: boolean;
 };
 
-const TabGroup: React.FC<TabGroupProps> = ({ options, onSelect, selected }) => (
+const TabGroup: React.FC<TabGroupProps> = ({
+  options,
+  onSelect,
+  selected,
+  disabled,
+}) => (
   <Box flexDirection="row" justifyContent="space-between">
     {options.map(({ label, value }, i) => (
       <Tab
         isSelected={selected === value}
         onPress={() => onSelect(value)}
         key={value + i}
+        disabled={disabled}
       >
         {label}
       </Tab>

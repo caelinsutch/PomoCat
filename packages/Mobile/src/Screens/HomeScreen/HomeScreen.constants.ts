@@ -1,20 +1,16 @@
-export enum HomeScreenMode {
-  Pomodoro = "pomodoro",
-  ShortBreak = "shortBreak",
-  LongBreak = "longBreak",
-}
+import { TimerType } from "../../GraphQL/types";
 
 export const homeScreenModeOptions = [
   {
     label: "Pomodoro",
-    value: HomeScreenMode.Pomodoro,
+    value: TimerType.Pomodoro,
   },
   {
     label: "Short Break",
-    value: HomeScreenMode.ShortBreak,
+    value: TimerType.ShortBreak,
   },
   {
     label: "Long Break",
-    value: HomeScreenMode.LongBreak,
+    value: TimerType.LongBreak,
   },
 ];

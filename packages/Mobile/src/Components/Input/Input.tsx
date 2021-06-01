@@ -50,7 +50,7 @@ const Input: React.FC<InputProps> = ({
           <Text
             variant="sm"
             fontWeight="bold"
-            marginRight="xss"
+            marginRight="xxs"
             color={textColor()}
           >
             {label}

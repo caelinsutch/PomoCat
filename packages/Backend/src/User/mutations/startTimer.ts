@@ -3,11 +3,11 @@ import { ObjectID } from "mongodb";
 import { MutationResolvers, TimerType } from "../../DAO";
 import { ContextType } from "../../context";
 import { checkAuth } from "../../Helpers";
-import { getUserCollection } from "../user.helpers";
+import { getUserCollection, getUserMvcFromDbObject } from "../user.helpers";
 
 const startTimer: MutationResolvers<ContextType>["startTimer"] = async (
   _,
-  { type },
+  { type: givenType },
   context
 ) => {
   checkAuth(context);
@@ -23,7 +23,7 @@ const startTimer: MutationResolvers<ContextType>["startTimer"] = async (
     // Get new end time
     const newEndTime = dayjs().add(timer.pausedTimeLeftMs, "ms");
     // Resume the timer
-    await userCollection.findOneAndUpdate(
+    const res = await userCollection.findOneAndUpdate(
       {
         _id: ObjectID.createFromHexString(id),
       },
@@ -38,13 +38,20 @@ const startTimer: MutationResolvers<ContextType>["startTimer"] = async (
       },
       {
         upsert: true,
+        returnDocument: "after",
       }
     );
-    return true;
+    const user = getUserMvcFromDbObject(res.value);
+
+    return { user };
   }
 
-  if (timer.endTime === null) {
-    if (!type) throw new Error("Type needed to start new timer");
+  if (!timer.endTime) {
+    let type = givenType;
+
+    if (!givenType) {
+      type = timer.type;
+    }
 
     let numMinutes: number;
 
@@ -56,7 +63,7 @@ const startTimer: MutationResolvers<ContextType>["startTimer"] = async (
         numMinutes = settings.pomoLength;
         break;
       case TimerType.LongBreak:
-        numMinutes = settings.pomoLength;
+        numMinutes = settings.longBreakLength;
         break;
       default:
         numMinutes = settings.pomoLength;
@@ -65,7 +72,7 @@ const startTimer: MutationResolvers<ContextType>["startTimer"] = async (
 
     const endTime: string = dayjs().add(numMinutes, "m").toISOString();
     // Start a new timer
-    await userCollection.findOneAndUpdate(
+    const res = await userCollection.findOneAndUpdate(
       {
         _id: ObjectID.createFromHexString(id),
       },
@@ -80,11 +87,15 @@ const startTimer: MutationResolvers<ContextType>["startTimer"] = async (
       },
       {
         upsert: true,
+        returnDocument: "after",
       }
     );
-    return true;
+    const user = getUserMvcFromDbObject(res.value);
+
+    return { user };
   }
-  return false;
+
+  return undefined;
 };
 
 export default startTimer;

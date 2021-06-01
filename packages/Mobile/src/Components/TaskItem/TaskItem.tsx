@@ -20,7 +20,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
     padding="sm"
   >
     <Box>
-      <Text variant="md" fontFamily="Inter_600Semibold">
+      <Text variant="md" fontFamily="Inter_600SemiBold">
         {name}
       </Text>
     </Box>

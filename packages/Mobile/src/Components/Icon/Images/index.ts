@@ -6,6 +6,9 @@ import Down from "./Down.svg";
 import Fire from "./Fire.svg";
 import Skip from "./Skip.svg";
 import Up from "./Up.svg";
+import Timer from "./Timer.svg";
+import Graph from "./Graph.svg";
+import Settings from "./Settings.svg";
 
 export default {
   CheckRound,
@@ -15,4 +18,7 @@ export default {
   Fire,
   Skip,
   Up,
+  Timer,
+  Graph,
+  Settings,
 };

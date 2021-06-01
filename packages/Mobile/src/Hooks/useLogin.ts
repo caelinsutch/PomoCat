@@ -9,7 +9,7 @@ export const loginMutation = () => gql`
       user {
         id
         email
-        task {
+        tasks {
           name
           numPomos
           createdAt

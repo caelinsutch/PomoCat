@@ -9,6 +9,7 @@ type TabProps = {
   onPress: () => void;
   isSelected: boolean;
   textProps?: TextProps<Theme>;
+  disabled?: boolean;
 } & BoxProps<Theme>;
 
 const Tab: React.FC<TabProps> = ({
@@ -16,9 +17,10 @@ const Tab: React.FC<TabProps> = ({
   isSelected,
   textProps,
   children,
+  disabled,
   ...props
 }) => (
-  <TouchableOpacity onPress={onPress}>
+  <TouchableOpacity onPress={onPress} disabled={disabled}>
     <Box
       backgroundColor={isSelected ? "primary600" : undefined}
       paddingVertical="xs"

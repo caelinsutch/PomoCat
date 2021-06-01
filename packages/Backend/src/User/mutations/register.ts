@@ -26,7 +26,7 @@ const register: MutationResolvers["register"] = async (
       shortBreakLength: 5,
     },
     timer: {},
-    task: [],
+    tasks: [],
     createdAt: dayjs().toISOString(),
   };
 

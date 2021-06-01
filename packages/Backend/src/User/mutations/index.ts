@@ -4,6 +4,7 @@ import updateUser from "./updateUser";
 import startTimer from "./startTimer";
 import stopTimer from "./stopTimer";
 import pauseTimer from "./pauseTimer";
+import changeTimerType from "./changeTimerType";
 
 export default {
   register,
@@ -12,4 +13,5 @@ export default {
   startTimer,
   stopTimer,
   pauseTimer,
+  changeTimerType,
 };

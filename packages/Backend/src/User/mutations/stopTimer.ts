@@ -1,7 +1,7 @@
 import { ObjectID } from "mongodb";
 import { MutationResolvers } from "../../DAO";
 import { ContextType } from "../../context";
-import { getUserCollection } from "../user.helpers";
+import { getUserCollection, getUserMvcFromDbObject } from "../user.helpers";
 import { checkAuth } from "../../Helpers";
 
 const stopTimer: MutationResolvers<ContextType>["stopTimer"] = async (
@@ -11,7 +11,7 @@ const stopTimer: MutationResolvers<ContextType>["stopTimer"] = async (
 ) => {
   checkAuth(context);
   const userCollection = await getUserCollection();
-  await userCollection.findOneAndUpdate(
+  const res = await userCollection.findOneAndUpdate(
     {
       _id: ObjectID.createFromHexString(context.user.id),
     },
@@ -27,9 +27,12 @@ const stopTimer: MutationResolvers<ContextType>["stopTimer"] = async (
     },
     {
       upsert: true,
+      returnDocument: "after",
     }
   );
-  return true;
+  const user = getUserMvcFromDbObject(res.value);
+
+  return { user };
 };
 
 export default stopTimer;

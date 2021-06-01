@@ -52,7 +52,6 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ navigation }) => {
           fontSize: 18,
         },
       });
-      navigation.push("Home");
     } catch (e) {
       Toast.show(e.toString(), {
         backgroundColor: theme.colors.red500,
