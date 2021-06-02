@@ -32,7 +32,10 @@
     "typescript": "~4.0.0"
   },
   "dependencies": {
+    "@gorhom/bottom-sheet": "^3",
     "backend": "file:packages\\Backend",
+    "react-native-gesture-handler": "^1.10.3",
+    "react-native-reanimated": "^2.2.0",
     "shared": "file:packages\\Shared"
   }
 }

@@ -103,6 +103,9 @@ const theme = createTheme({
       borderRadius: "sm",
       padding: "md",
     },
+    ghost: {
+      backgroundColor: undefined,
+    },
     warning: {
       borderColor: "accent400",
       borderWidth: 2,

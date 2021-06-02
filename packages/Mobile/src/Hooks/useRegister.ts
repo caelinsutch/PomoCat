@@ -1,10 +1,6 @@
 import { ApolloError, gql } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  RegisterMutationResult,
-  useLoginMutation,
-  useRegisterMutation,
-} from "../GraphQL/types";
+import { RegisterMutationResult, useRegisterMutation } from "../GraphQL/types";
 
 export const registerMutation = () => gql`
   mutation Register($email: String!, $password: String!) {

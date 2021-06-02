@@ -13,7 +13,6 @@ export const HomeQuery = () => gql`
       tasks {
         name
         numPomos
-        createdAt
         completedPomos
         isCompleted
       }

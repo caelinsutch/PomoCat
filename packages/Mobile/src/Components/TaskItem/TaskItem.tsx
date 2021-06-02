@@ -1,6 +1,5 @@
-import React from "react";
-import { Pressable } from "react-native";
-import { Box, Text } from "..";
+import React, { useState } from "react";
+import { Box, Icon, Text } from "..";
 import { Task } from "../../GraphQL/types";
 
 type TaskItemProps = Pick<Task, "name" | "numPomos" | "completedPomos">;
@@ -17,10 +16,13 @@ const TaskItem: React.FC<TaskItemProps> = ({
     borderRadius="xs"
     justifyContent="space-between"
     flexDirection="row"
-    padding="sm"
+    padding="md"
+    marginBottom="sm"
   >
-    <Box>
-      <Text variant="md" fontFamily="Inter_600SemiBold">
+    <Box flexDirection="row">
+      <Icon name="CheckRound" color="gray200" size={24} />
+
+      <Text marginLeft="sm" variant="md" fontFamily="Inter_600SemiBold">
         {name}
       </Text>
     </Box>

@@ -27,7 +27,7 @@ type AuthScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, "Auth">;
 };
 
-const AuthScreen: React.FC<AuthScreenProps> = ({ navigation }) => {
+const AuthScreen: React.FC<AuthScreenProps> = () => {
   const theme = useTheme<Theme>();
   const [isLogin, setIsLogin] = useState(false);
   const { login, loading: loginLoading } = useLogin();

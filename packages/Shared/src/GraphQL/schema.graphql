@@ -12,6 +12,7 @@ type Mutation {
     changeTimerType(type: TimerType!): GenericResult
     stopTimer: GenericResult
     pauseTimer: GenericResult
+    createTask(name: String!, numPomos: Int!): GenericResult
 }
 
 type GenericResult {
@@ -34,7 +35,7 @@ type UserMVC @entity {
     email: String! @column
     password: String! @column
     settings: Settings! @column
-    tasks: [Task]! @column
+    tasks: [Task!]! @column
     analytics: Analytics! @column
     timer: Timer! @column
     createdAt: String! @column

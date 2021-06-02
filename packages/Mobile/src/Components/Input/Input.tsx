@@ -72,11 +72,13 @@ const Input: React.FC<InputProps> = ({
         editable={props.variant !== "disabled"}
         {...props}
       />
-      {props.variant === "warning" || props.variant === "error" ? (
-        <Box marginTop="xs">
-          <Text color={textColor()}>{message}</Text>
-        </Box>
-      ) : undefined}
+      <Box marginVertical="xs">
+        <Text color={textColor()}>
+          {props.variant === "warning" || props.variant === "error"
+            ? message
+            : ""}
+        </Text>
+      </Box>
     </Box>
   );
 };

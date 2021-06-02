@@ -51,6 +51,7 @@ export type Mutation = {
   changeTimerType?: Maybe<GenericResult>;
   stopTimer?: Maybe<GenericResult>;
   pauseTimer?: Maybe<GenericResult>;
+  createTask?: Maybe<GenericResult>;
 };
 
 export type MutationRegisterArgs = {
@@ -73,6 +74,11 @@ export type MutationStartTimerArgs = {
 
 export type MutationChangeTimerTypeArgs = {
   type: TimerType;
+};
+
+export type MutationCreateTaskArgs = {
+  name: Scalars["String"];
+  numPomos: Scalars["Int"];
 };
 
 export type Query = {
@@ -131,7 +137,7 @@ export type UserMvc = {
   email: Scalars["String"];
   password: Scalars["String"];
   settings: Settings;
-  tasks: Array<Maybe<Task>>;
+  tasks: Array<Task>;
   analytics: Analytics;
   timer: Timer;
   createdAt: Scalars["String"];
@@ -141,73 +147,30 @@ export type IsUserLoggedInQueryVariables = Exact<{ [key: string]: never }>;
 
 export type IsUserLoggedInQuery = Pick<Query, "token">;
 
+export type CreateTaskMutationVariables = Exact<{
+  name: Scalars["String"];
+  numPomos: Scalars["Int"];
+}>;
+
+export type CreateTaskMutation = {
+  createTask?: Maybe<{
+    user: Pick<UserMvc, "id"> & {
+      tasks: Array<Pick<Task, "name" | "numPomos" | "isCompleted">>;
+    };
+  }>;
+};
+
 export type HomeScreenQueryVariables = Exact<{ [key: string]: never }>;
 
 export type HomeScreenQuery = {
   user?: Maybe<
     Pick<UserMvc, "id" | "email"> & {
       tasks: Array<
-        Maybe<
-          Pick<
-            Task,
-            "name" | "numPomos" | "createdAt" | "completedPomos" | "isCompleted"
-          >
-        >
+        Pick<Task, "name" | "numPomos" | "completedPomos" | "isCompleted">
       >;
       timer: Pick<Timer, "endTime" | "isPaused" | "type">;
     }
   >;
-};
-
-export type LoginMutationVariables = Exact<{
-  email: Scalars["String"];
-  password: Scalars["String"];
-}>;
-
-export type LoginMutation = {
-  login?: Maybe<
-    Pick<AuthResult, "token"> & {
-      user: Pick<UserMvc, "id" | "email"> & {
-        tasks: Array<
-          Maybe<
-            Pick<
-              Task,
-              | "name"
-              | "numPomos"
-              | "createdAt"
-              | "completedPomos"
-              | "isCompleted"
-            >
-          >
-        >;
-        timer: Pick<
-          Timer,
-          "endTime" | "isPaused" | "pausedTimeLeftMs" | "type"
-        >;
-      };
-    }
-  >;
-};
-
-export type RegisterMutationVariables = Exact<{
-  email: Scalars["String"];
-  password: Scalars["String"];
-}>;
-
-export type RegisterMutation = {
-  register: Pick<AuthResult, "token"> & {
-    user: Pick<UserMvc, "id" | "email"> & {
-      tasks: Array<
-        Maybe<
-          Pick<
-            Task,
-            "name" | "numPomos" | "createdAt" | "completedPomos" | "isCompleted"
-          >
-        >
-      >;
-      timer: Pick<Timer, "endTime" | "isPaused" | "pausedTimeLeftMs" | "type">;
-    };
-  };
 };
 
 export type SetTimerTypeMutationVariables = Exact<{
@@ -244,6 +207,49 @@ export type StopTimerMutation = {
   stopTimer?: Maybe<{
     user: Pick<UserMvc, "id"> & { timer: Pick<Timer, "endTime"> };
   }>;
+};
+
+export type LoginMutationVariables = Exact<{
+  email: Scalars["String"];
+  password: Scalars["String"];
+}>;
+
+export type LoginMutation = {
+  login?: Maybe<
+    Pick<AuthResult, "token"> & {
+      user: Pick<UserMvc, "id" | "email"> & {
+        tasks: Array<
+          Pick<
+            Task,
+            "name" | "numPomos" | "createdAt" | "completedPomos" | "isCompleted"
+          >
+        >;
+        timer: Pick<
+          Timer,
+          "endTime" | "isPaused" | "pausedTimeLeftMs" | "type"
+        >;
+      };
+    }
+  >;
+};
+
+export type RegisterMutationVariables = Exact<{
+  email: Scalars["String"];
+  password: Scalars["String"];
+}>;
+
+export type RegisterMutation = {
+  register: Pick<AuthResult, "token"> & {
+    user: Pick<UserMvc, "id" | "email"> & {
+      tasks: Array<
+        Pick<
+          Task,
+          "name" | "numPomos" | "createdAt" | "completedPomos" | "isCompleted"
+        >
+      >;
+      timer: Pick<Timer, "endTime" | "isPaused" | "pausedTimeLeftMs" | "type">;
+    };
+  };
 };
 
 export type WriteTokenQueryVariables = Exact<{
@@ -307,6 +313,64 @@ export type IsUserLoggedInQueryResult = ApolloReactCommon.QueryResult<
   IsUserLoggedInQuery,
   IsUserLoggedInQueryVariables
 >;
+export const CreateTaskDocument = gql`
+  mutation CreateTask($name: String!, $numPomos: Int!) {
+    createTask(name: $name, numPomos: $numPomos) {
+      user {
+        id
+        tasks {
+          name
+          numPomos
+          isCompleted
+        }
+      }
+    }
+  }
+`;
+export type CreateTaskMutationFn = ApolloReactCommon.MutationFunction<
+  CreateTaskMutation,
+  CreateTaskMutationVariables
+>;
+
+/**
+ * __useCreateTaskMutation__
+ *
+ * To run a mutation, you first call `useCreateTaskMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTaskMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTaskMutation, { data, loading, error }] = useCreateTaskMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      numPomos: // value for 'numPomos'
+ *   },
+ * });
+ */
+export function useCreateTaskMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    CreateTaskMutation,
+    CreateTaskMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return ApolloReactHooks.useMutation<
+    CreateTaskMutation,
+    CreateTaskMutationVariables
+  >(CreateTaskDocument, options);
+}
+export type CreateTaskMutationHookResult = ReturnType<
+  typeof useCreateTaskMutation
+>;
+export type CreateTaskMutationResult =
+  ApolloReactCommon.MutationResult<CreateTaskMutation>;
+export type CreateTaskMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateTaskMutation,
+  CreateTaskMutationVariables
+>;
 export const HomeScreenDocument = gql`
   query HomeScreen {
     user {
@@ -315,7 +379,6 @@ export const HomeScreenDocument = gql`
       tasks {
         name
         numPomos
-        createdAt
         completedPomos
         isCompleted
       }
@@ -374,138 +437,6 @@ export type HomeScreenLazyQueryHookResult = ReturnType<
 export type HomeScreenQueryResult = ApolloReactCommon.QueryResult<
   HomeScreenQuery,
   HomeScreenQueryVariables
->;
-export const LoginDocument = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      token
-      user {
-        id
-        email
-        tasks {
-          name
-          numPomos
-          createdAt
-          completedPomos
-          isCompleted
-        }
-        timer {
-          endTime
-          isPaused
-          pausedTimeLeftMs
-          type
-        }
-      }
-    }
-  }
-`;
-export type LoginMutationFn = ApolloReactCommon.MutationFunction<
-  LoginMutation,
-  LoginMutationVariables
->;
-
-/**
- * __useLoginMutation__
- *
- * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLoginMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [loginMutation, { data, loading, error }] = useLoginMutation({
- *   variables: {
- *      email: // value for 'email'
- *      password: // value for 'password'
- *   },
- * });
- */
-export function useLoginMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    LoginMutation,
-    LoginMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return ApolloReactHooks.useMutation<LoginMutation, LoginMutationVariables>(
-    LoginDocument,
-    options
-  );
-}
-export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
-export type LoginMutationResult =
-  ApolloReactCommon.MutationResult<LoginMutation>;
-export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  LoginMutation,
-  LoginMutationVariables
->;
-export const RegisterDocument = gql`
-  mutation Register($email: String!, $password: String!) {
-    register(email: $email, password: $password) {
-      token
-      user {
-        id
-        email
-        tasks {
-          name
-          numPomos
-          createdAt
-          completedPomos
-          isCompleted
-        }
-        timer {
-          endTime
-          isPaused
-          pausedTimeLeftMs
-          type
-        }
-      }
-    }
-  }
-`;
-export type RegisterMutationFn = ApolloReactCommon.MutationFunction<
-  RegisterMutation,
-  RegisterMutationVariables
->;
-
-/**
- * __useRegisterMutation__
- *
- * To run a mutation, you first call `useRegisterMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRegisterMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [registerMutation, { data, loading, error }] = useRegisterMutation({
- *   variables: {
- *      email: // value for 'email'
- *      password: // value for 'password'
- *   },
- * });
- */
-export function useRegisterMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    RegisterMutation,
-    RegisterMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return ApolloReactHooks.useMutation<
-    RegisterMutation,
-    RegisterMutationVariables
-  >(RegisterDocument, options);
-}
-export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
-export type RegisterMutationResult =
-  ApolloReactCommon.MutationResult<RegisterMutation>;
-export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  RegisterMutation,
-  RegisterMutationVariables
 >;
 export const SetTimerTypeDocument = gql`
   mutation SetTimerType($type: TimerType!) {
@@ -724,6 +655,138 @@ export type StopTimerMutationResult =
 export type StopTimerMutationOptions = ApolloReactCommon.BaseMutationOptions<
   StopTimerMutation,
   StopTimerMutationVariables
+>;
+export const LoginDocument = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
+      user {
+        id
+        email
+        tasks {
+          name
+          numPomos
+          createdAt
+          completedPomos
+          isCompleted
+        }
+        timer {
+          endTime
+          isPaused
+          pausedTimeLeftMs
+          type
+        }
+      }
+    }
+  }
+`;
+export type LoginMutationFn = ApolloReactCommon.MutationFunction<
+  LoginMutation,
+  LoginMutationVariables
+>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useLoginMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    LoginMutation,
+    LoginMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return ApolloReactHooks.useMutation<LoginMutation, LoginMutationVariables>(
+    LoginDocument,
+    options
+  );
+}
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult =
+  ApolloReactCommon.MutationResult<LoginMutation>;
+export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  LoginMutation,
+  LoginMutationVariables
+>;
+export const RegisterDocument = gql`
+  mutation Register($email: String!, $password: String!) {
+    register(email: $email, password: $password) {
+      token
+      user {
+        id
+        email
+        tasks {
+          name
+          numPomos
+          createdAt
+          completedPomos
+          isCompleted
+        }
+        timer {
+          endTime
+          isPaused
+          pausedTimeLeftMs
+          type
+        }
+      }
+    }
+  }
+`;
+export type RegisterMutationFn = ApolloReactCommon.MutationFunction<
+  RegisterMutation,
+  RegisterMutationVariables
+>;
+
+/**
+ * __useRegisterMutation__
+ *
+ * To run a mutation, you first call `useRegisterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerMutation, { data, loading, error }] = useRegisterMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useRegisterMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    RegisterMutation,
+    RegisterMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return ApolloReactHooks.useMutation<
+    RegisterMutation,
+    RegisterMutationVariables
+  >(RegisterDocument, options);
+}
+export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
+export type RegisterMutationResult =
+  ApolloReactCommon.MutationResult<RegisterMutation>;
+export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  RegisterMutation,
+  RegisterMutationVariables
 >;
 export const WriteTokenDocument = gql`
   query WriteToken($id: Int!) {

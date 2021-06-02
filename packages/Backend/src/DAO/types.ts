@@ -52,6 +52,7 @@ export type Mutation = {
   changeTimerType?: Maybe<GenericResult>;
   stopTimer?: Maybe<GenericResult>;
   pauseTimer?: Maybe<GenericResult>;
+  createTask?: Maybe<GenericResult>;
 };
 
 export type MutationRegisterArgs = {
@@ -74,6 +75,11 @@ export type MutationStartTimerArgs = {
 
 export type MutationChangeTimerTypeArgs = {
   type: TimerType;
+};
+
+export type MutationCreateTaskArgs = {
+  name: Scalars["String"];
+  numPomos: Scalars["Int"];
 };
 
 export type Query = {
@@ -132,7 +138,7 @@ export type UserMvc = {
   email: Scalars["String"];
   password: Scalars["String"];
   settings: Settings;
-  tasks: Array<Maybe<Task>>;
+  tasks: Array<Task>;
   analytics: Analytics;
   timer: Timer;
   createdAt: Scalars["String"];
@@ -178,7 +184,7 @@ export type UserMvcDbObject = {
   email: string;
   password: string;
   settings: Settings;
-  tasks: Array<Maybe<Task>>;
+  tasks: Array<Task>;
   analytics: Analytics;
   timer: Timer;
   createdAt: string;
@@ -498,6 +504,12 @@ export type MutationResolvers<
     ParentType,
     ContextType
   >;
+  createTask?: Resolver<
+    Maybe<ResolversTypes["GenericResult"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateTaskArgs, "name" | "numPomos">
+  >;
 };
 
 export type QueryResolvers<
@@ -568,11 +580,7 @@ export type UserMvcResolvers<
   email?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   password?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   settings?: Resolver<ResolversTypes["Settings"], ParentType, ContextType>;
-  tasks?: Resolver<
-    Array<Maybe<ResolversTypes["Task"]>>,
-    ParentType,
-    ContextType
-  >;
+  tasks?: Resolver<Array<ResolversTypes["Task"]>, ParentType, ContextType>;
   analytics?: Resolver<ResolversTypes["Analytics"], ParentType, ContextType>;
   timer?: Resolver<ResolversTypes["Timer"], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
