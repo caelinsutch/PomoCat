@@ -20,6 +20,7 @@ const HomeScreen: React.FC = () => {
     stopTimer,
     handleTimerTypeChange,
     timerType,
+    refetch,
   } = useHomeScreen();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -28,9 +29,14 @@ const HomeScreen: React.FC = () => {
     return <Box />;
   }
 
+  const onAddModalClose = () => {
+    refetch();
+    setModalOpen(false);
+  };
+
   return (
     <>
-      <AddTaskModal setClose={() => setModalOpen(false)} open={modalOpen} />
+      <AddTaskModal setClose={onAddModalClose} open={modalOpen} />
       <ScreenContainer scroll>
         <ImageBackground
           source={TopBackground}
@@ -108,13 +114,13 @@ const HomeScreen: React.FC = () => {
           </Text>
           <Box>
             {data.user.tasks.length === 0 ? (
-              <Text variant="sm" color="gray600">
+              <Text variant="sm" color="gray600" marginBottom="sm">
                 Finished with todays tasks!
               </Text>
             ) : (
-              data.user.tasks
-                .filter((a) => !a.isCompleted)
-                .map((task) => <TaskItem {...task} />)
+              data.user.tasks.map((task) => (
+                <TaskItem key={task.name + task.createdAt} {...task} />
+              ))
             )}
             <Box
               borderStyle="dashed"

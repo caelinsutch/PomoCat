@@ -14,7 +14,7 @@ export const HomeQuery = () => gql`
         name
         numPomos
         completedPomos
-        isCompleted
+        createdAt
       }
       timer {
         endTime

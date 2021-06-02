@@ -14,7 +14,6 @@ export const loginMutation = () => gql`
           numPomos
           createdAt
           completedPomos
-          isCompleted
         }
         timer {
           endTime

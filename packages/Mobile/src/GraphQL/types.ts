@@ -52,6 +52,7 @@ export type Mutation = {
   stopTimer?: Maybe<GenericResult>;
   pauseTimer?: Maybe<GenericResult>;
   createTask?: Maybe<GenericResult>;
+  completeTask?: Maybe<GenericResult>;
 };
 
 export type MutationRegisterArgs = {
@@ -79,6 +80,11 @@ export type MutationChangeTimerTypeArgs = {
 export type MutationCreateTaskArgs = {
   name: Scalars["String"];
   numPomos: Scalars["Int"];
+};
+
+export type MutationCompleteTaskArgs = {
+  name: Scalars["String"];
+  createdAt: Scalars["String"];
 };
 
 export type Query = {
@@ -110,7 +116,6 @@ export type Task = {
   numPomos: Scalars["Int"];
   createdAt: Scalars["String"];
   completedPomos: Scalars["Int"];
-  isCompleted: Scalars["Boolean"];
 };
 
 export type Timer = {
@@ -147,6 +152,21 @@ export type IsUserLoggedInQueryVariables = Exact<{ [key: string]: never }>;
 
 export type IsUserLoggedInQuery = Pick<Query, "token">;
 
+export type CompleteTaskMutationVariables = Exact<{
+  name: Scalars["String"];
+  createdAt: Scalars["String"];
+}>;
+
+export type CompleteTaskMutation = {
+  completeTask?: Maybe<{
+    user: Pick<UserMvc, "id"> & {
+      tasks: Array<
+        Pick<Task, "name" | "numPomos" | "completedPomos" | "createdAt">
+      >;
+    };
+  }>;
+};
+
 export type CreateTaskMutationVariables = Exact<{
   name: Scalars["String"];
   numPomos: Scalars["Int"];
@@ -155,7 +175,7 @@ export type CreateTaskMutationVariables = Exact<{
 export type CreateTaskMutation = {
   createTask?: Maybe<{
     user: Pick<UserMvc, "id"> & {
-      tasks: Array<Pick<Task, "name" | "numPomos" | "isCompleted">>;
+      tasks: Array<Pick<Task, "name" | "numPomos">>;
     };
   }>;
 };
@@ -166,7 +186,7 @@ export type HomeScreenQuery = {
   user?: Maybe<
     Pick<UserMvc, "id" | "email"> & {
       tasks: Array<
-        Pick<Task, "name" | "numPomos" | "completedPomos" | "isCompleted">
+        Pick<Task, "name" | "numPomos" | "completedPomos" | "createdAt">
       >;
       timer: Pick<Timer, "endTime" | "isPaused" | "type">;
     }
@@ -219,10 +239,7 @@ export type LoginMutation = {
     Pick<AuthResult, "token"> & {
       user: Pick<UserMvc, "id" | "email"> & {
         tasks: Array<
-          Pick<
-            Task,
-            "name" | "numPomos" | "createdAt" | "completedPomos" | "isCompleted"
-          >
+          Pick<Task, "name" | "numPomos" | "createdAt" | "completedPomos">
         >;
         timer: Pick<
           Timer,
@@ -242,10 +259,7 @@ export type RegisterMutation = {
   register: Pick<AuthResult, "token"> & {
     user: Pick<UserMvc, "id" | "email"> & {
       tasks: Array<
-        Pick<
-          Task,
-          "name" | "numPomos" | "createdAt" | "completedPomos" | "isCompleted"
-        >
+        Pick<Task, "name" | "numPomos" | "createdAt" | "completedPomos">
       >;
       timer: Pick<Timer, "endTime" | "isPaused" | "pausedTimeLeftMs" | "type">;
     };
@@ -313,6 +327,65 @@ export type IsUserLoggedInQueryResult = ApolloReactCommon.QueryResult<
   IsUserLoggedInQuery,
   IsUserLoggedInQueryVariables
 >;
+export const CompleteTaskDocument = gql`
+  mutation CompleteTask($name: String!, $createdAt: String!) {
+    completeTask(name: $name, createdAt: $createdAt) {
+      user {
+        id
+        tasks {
+          name
+          numPomos
+          completedPomos
+          createdAt
+        }
+      }
+    }
+  }
+`;
+export type CompleteTaskMutationFn = ApolloReactCommon.MutationFunction<
+  CompleteTaskMutation,
+  CompleteTaskMutationVariables
+>;
+
+/**
+ * __useCompleteTaskMutation__
+ *
+ * To run a mutation, you first call `useCompleteTaskMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCompleteTaskMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [completeTaskMutation, { data, loading, error }] = useCompleteTaskMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      createdAt: // value for 'createdAt'
+ *   },
+ * });
+ */
+export function useCompleteTaskMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    CompleteTaskMutation,
+    CompleteTaskMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return ApolloReactHooks.useMutation<
+    CompleteTaskMutation,
+    CompleteTaskMutationVariables
+  >(CompleteTaskDocument, options);
+}
+export type CompleteTaskMutationHookResult = ReturnType<
+  typeof useCompleteTaskMutation
+>;
+export type CompleteTaskMutationResult =
+  ApolloReactCommon.MutationResult<CompleteTaskMutation>;
+export type CompleteTaskMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CompleteTaskMutation,
+  CompleteTaskMutationVariables
+>;
 export const CreateTaskDocument = gql`
   mutation CreateTask($name: String!, $numPomos: Int!) {
     createTask(name: $name, numPomos: $numPomos) {
@@ -321,7 +394,6 @@ export const CreateTaskDocument = gql`
         tasks {
           name
           numPomos
-          isCompleted
         }
       }
     }
@@ -380,7 +452,7 @@ export const HomeScreenDocument = gql`
         name
         numPomos
         completedPomos
-        isCompleted
+        createdAt
       }
       timer {
         endTime
@@ -668,7 +740,6 @@ export const LoginDocument = gql`
           numPomos
           createdAt
           completedPomos
-          isCompleted
         }
         timer {
           endTime
@@ -734,7 +805,6 @@ export const RegisterDocument = gql`
           numPomos
           createdAt
           completedPomos
-          isCompleted
         }
         timer {
           endTime

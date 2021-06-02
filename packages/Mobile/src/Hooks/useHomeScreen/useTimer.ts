@@ -58,6 +58,7 @@ type UseTimer = {
   timeLeft: string;
   timerRunning: boolean;
   handleButtonClick: () => void;
+  refetch: () => void;
 };
 
 const useTimer = (): UseTimer => {
@@ -159,6 +160,7 @@ const useTimer = (): UseTimer => {
     timeLeft,
     timerRunning,
     handleButtonClick,
+    refetch,
   };
 };
 

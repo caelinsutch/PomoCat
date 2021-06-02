@@ -1,29 +1,21 @@
 import { ObjectID } from "mongodb";
-import { MutationResolvers } from "../../DAO";
+import { MutationResolvers, UserMvc } from "../../DAO";
 import { checkAuth } from "../../Helpers";
 import { getUserCollection, getUserMvcFromDbObject } from "../user.helpers";
 
-const createTask: MutationResolvers["createTask"] = async (
+const completeTask: MutationResolvers["completeTask"] = async (
   _,
-  { numPomos, name },
+  { name, createdAt },
   context
 ) => {
   checkAuth(context);
-
   const userCollection = await getUserCollection();
 
-  const previous = context.user;
+  const previous: UserMvc = context.user;
 
-  const newTasks = [
-    ...previous.tasks,
-    {
-      name,
-      numPomos,
-      createdAt: Date.now(),
-      completedPomos: 0,
-      isCompleted: false,
-    },
-  ];
+  const newTasks = previous.tasks.filter(
+    (a) => a.name !== name && a.createdAt !== createdAt
+  );
 
   const res = await userCollection.findOneAndUpdate(
     {
@@ -39,10 +31,9 @@ const createTask: MutationResolvers["createTask"] = async (
       upsert: true,
     }
   );
-
   const user = getUserMvcFromDbObject(res.value);
 
   return { user };
 };
 
-export default createTask;
+export default completeTask;

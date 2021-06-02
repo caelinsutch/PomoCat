@@ -14,7 +14,6 @@ export const registerMutation = () => gql`
           numPomos
           createdAt
           completedPomos
-          isCompleted
         }
         timer {
           endTime

@@ -13,6 +13,7 @@ type Mutation {
     stopTimer: GenericResult
     pauseTimer: GenericResult
     createTask(name: String!, numPomos: Int!): GenericResult
+    completeTask(name: String!, createdAt: String!): GenericResult
 }
 
 type GenericResult {
@@ -60,7 +61,6 @@ type Task @entity(embedded: true) {
     numPomos: Int! @column
     createdAt: String! @column
     completedPomos: Int! @column
-    isCompleted: Boolean! @column
 }
 
 type Analytics @entity(embedded: true) {

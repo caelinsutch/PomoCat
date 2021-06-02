@@ -12,7 +12,6 @@ export const CreateTaskMutation = gql`
         tasks {
           name
           numPomos
-          isCompleted
         }
       }
     }

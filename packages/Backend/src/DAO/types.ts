@@ -53,6 +53,7 @@ export type Mutation = {
   stopTimer?: Maybe<GenericResult>;
   pauseTimer?: Maybe<GenericResult>;
   createTask?: Maybe<GenericResult>;
+  completeTask?: Maybe<GenericResult>;
 };
 
 export type MutationRegisterArgs = {
@@ -80,6 +81,11 @@ export type MutationChangeTimerTypeArgs = {
 export type MutationCreateTaskArgs = {
   name: Scalars["String"];
   numPomos: Scalars["Int"];
+};
+
+export type MutationCompleteTaskArgs = {
+  name: Scalars["String"];
+  createdAt: Scalars["String"];
 };
 
 export type Query = {
@@ -111,7 +117,6 @@ export type Task = {
   numPomos: Scalars["Int"];
   createdAt: Scalars["String"];
   completedPomos: Scalars["Int"];
-  isCompleted: Scalars["Boolean"];
 };
 
 export type Timer = {
@@ -169,7 +174,6 @@ export type TaskDbObject = {
   numPomos: number;
   createdAt: string;
   completedPomos: number;
-  isCompleted: boolean;
 };
 
 export type TimerDbObject = {
@@ -510,6 +514,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationCreateTaskArgs, "name" | "numPomos">
   >;
+  completeTask?: Resolver<
+    Maybe<ResolversTypes["GenericResult"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationCompleteTaskArgs, "name" | "createdAt">
+  >;
 };
 
 export type QueryResolvers<
@@ -549,7 +559,6 @@ export type TaskResolvers<
   numPomos?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   completedPomos?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
-  isCompleted?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

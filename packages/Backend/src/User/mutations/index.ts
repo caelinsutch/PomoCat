@@ -6,6 +6,7 @@ import stopTimer from "./stopTimer";
 import pauseTimer from "./pauseTimer";
 import changeTimerType from "./changeTimerType";
 import createTask from "./createTask";
+import completeTask from "./completeTask";
 
 export default {
   register,
@@ -16,4 +17,5 @@ export default {
   pauseTimer,
   changeTimerType,
   createTask,
+  completeTask,
 };

@@ -6,10 +6,10 @@ import { Theme } from "../../Theme";
 export type IconProps = {
   name: keyof typeof Icons;
   color: keyof Theme["colors"];
-  size: number;
+  size?: number;
 };
 
-const Icon: React.FC<IconProps> = ({ name, color, size }) => {
+const Icon: React.FC<IconProps> = ({ name, color, size = 24 }) => {
   const IconElement = Icons[name];
   const theme = useTheme<Theme>();
 

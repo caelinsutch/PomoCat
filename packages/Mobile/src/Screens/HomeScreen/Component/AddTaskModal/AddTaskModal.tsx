@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { KeyboardAvoidingView, Modal, View } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import Toast from "react-native-root-toast";
-import { Box, Button, Input, Text } from "../../../../Components";
+import { Box, Button, Icon, Input } from "../../../../Components";
 import { numRegexPattern } from "../../../../constants";
 import { useCreateTask } from "../../../../Hooks";
 import theme from "../../../../Theme";
@@ -18,6 +18,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ open, setClose }) => {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
   const onSubmit = async (data: any) => {
@@ -33,6 +34,12 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ open, setClose }) => {
       });
     }
   };
+
+  useEffect(() => {
+    if (open) {
+      reset();
+    }
+  }, [open]);
 
   return (
     <Modal visible={open} animationType="slide" transparent>
@@ -56,7 +63,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ open, setClose }) => {
             <Box flexDirection="row" justifyContent="space-between">
               <Box />
               <Box onTouchEnd={setClose}>
-                <Text>X</Text>
+                <Icon size={24} color="gray800" name="Close" />
               </Box>
             </Box>
             <Controller

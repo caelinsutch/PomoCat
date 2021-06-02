@@ -9,6 +9,7 @@ import Up from "./Up.svg";
 import Timer from "./Timer.svg";
 import Graph from "./Graph.svg";
 import Settings from "./Settings.svg";
+import Close from "./Close.svg";
 
 export default {
   CheckRound,
@@ -21,4 +22,5 @@ export default {
   Timer,
   Graph,
   Settings,
+  Close,
 };
