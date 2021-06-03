@@ -6,7 +6,7 @@ let database: Db;
 
 const dbName = "pomocat-production";
 
-const url = `mongodb+srv://admin:adminpassword@sidehustlemain.qrbvi.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+const url = `mongodb://localhost/${dbName}`;
 
 export const connect = async (): Promise<Db> => {
   if (!database) {

@@ -1,6 +1,9 @@
 import { ApolloError, gql } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSetRecoilState } from "recoil";
 import { LoginMutationResult, useLoginMutation } from "../GraphQL/types";
+import apolloClient from "../GraphQL/apolloClient";
+import { userState } from "../Recoil";
 
 export const loginMutation = () => gql`
   mutation Login($email: String!, $password: String!) {
@@ -37,6 +40,7 @@ type UseLogin = {
 
 const useLogin = (): UseLogin => {
   const [loginOperation, { loading, error }] = useLoginMutation();
+  const setUser = useSetRecoilState(userState);
 
   const login = async (
     email: string,
@@ -50,6 +54,9 @@ const useLogin = (): UseLogin => {
     });
     if (res.data?.login?.token) {
       await AsyncStorage.setItem("userToken", res.data.login.token);
+      setUser({
+        token: res.data.login.token,
+      });
     }
     return res.data;
   };

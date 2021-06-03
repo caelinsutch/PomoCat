@@ -5,7 +5,7 @@ import {
   useHomeScreenQuery,
 } from "../../GraphQL/types";
 
-export const HomeQuery = () => gql`
+export const HomeQuery = gql`
   query HomeScreen {
     user {
       id

@@ -44,7 +44,7 @@ const Input: React.FC<InputProps> = ({
   };
 
   return (
-    <Box>
+    <>
       {label && (
         <Box flexDirection="row" alignItems="center">
           <Text
@@ -79,7 +79,7 @@ const Input: React.FC<InputProps> = ({
             : ""}
         </Text>
       </Box>
-    </Box>
+    </>
   );
 };
 

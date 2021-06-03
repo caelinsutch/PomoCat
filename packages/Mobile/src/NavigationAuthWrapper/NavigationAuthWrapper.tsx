@@ -38,6 +38,7 @@ const NavigationAuthWrapper: React.FC = () => {
     <NavigationContainer>
       {isLoggedIn ? (
         <Tab.Navigator
+          initialRouteName="Home"
           screenOptions={({ route }) => ({
             tabBarIcon: ({ color, size, focused }) => {
               let iconName: IconProps["name"] = "Timer";

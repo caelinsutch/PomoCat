@@ -111,7 +111,7 @@ const AuthScreen: React.FC<AuthScreenProps> = () => {
             />
           </Box>
 
-          <Box marginTop="xl">
+          <Box>
             <Controller
               control={control}
               render={({ field: { onChange, value } }) => (
@@ -138,7 +138,7 @@ const AuthScreen: React.FC<AuthScreenProps> = () => {
               onPress={handleSubmit(onSubmit)}
               loading={isLogin ? loginLoading : registerLoading}
             >
-              {isLogin ? "Login" : "Signup"}
+              {isLogin ? "Login" : "Sign Up"}
             </Button>
           </Box>
           <Box marginTop="xl">

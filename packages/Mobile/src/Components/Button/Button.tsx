@@ -8,6 +8,7 @@ import Text from "../Text";
 type ButtonProps = {
   onPress: () => void;
   loading?: boolean;
+  disabled?: boolean;
   textProps?: TextProps<Theme>;
 } & Partial<BoxProps<Theme>>;
 
@@ -16,14 +17,19 @@ const Button: React.FC<ButtonProps> = ({
   onPress,
   loading,
   textProps,
+  disabled = false,
   ...props
 }) => (
-  <TouchableHighlight underlayColor="transparent" onPress={onPress}>
+  <TouchableHighlight
+    underlayColor="transparent"
+    onPress={onPress}
+    disabled={disabled}
+  >
     <Box
       py="md"
       px="xl"
       borderRadius="sm"
-      backgroundColor="brand"
+      backgroundColor={disabled ? "primary300" : "primary500"}
       shadowOffset={{ height: 2, width: 0 }}
       shadowRadius={5}
       shadowColor="black"

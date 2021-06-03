@@ -180,6 +180,19 @@ export type CreateTaskMutation = {
   }>;
 };
 
+export type SettingsDataQueryVariables = Exact<{ [key: string]: never }>;
+
+export type SettingsDataQuery = {
+  user?: Maybe<
+    Pick<UserMvc, "email"> & {
+      settings: Pick<
+        Settings,
+        "pomoLength" | "shortBreakLength" | "longBreakLength" | "isAlarmSound"
+      >;
+    }
+  >;
+};
+
 export type HomeScreenQueryVariables = Exact<{ [key: string]: never }>;
 
 export type HomeScreenQuery = {
@@ -264,6 +277,25 @@ export type RegisterMutation = {
       timer: Pick<Timer, "endTime" | "isPaused" | "pausedTimeLeftMs" | "type">;
     };
   };
+};
+
+export type UpdateSettingsMutationVariables = Exact<{
+  email: Scalars["String"];
+  pomoLength: Scalars["Int"];
+  shortBreakLength: Scalars["Int"];
+  longBreakLength: Scalars["Int"];
+  isAlarmSound: Scalars["Boolean"];
+}>;
+
+export type UpdateSettingsMutation = {
+  updateUser?: Maybe<
+    Pick<UserMvc, "id" | "email"> & {
+      settings: Pick<
+        Settings,
+        "pomoLength" | "shortBreakLength" | "longBreakLength" | "isAlarmSound"
+      >;
+    }
+  >;
 };
 
 export type WriteTokenQueryVariables = Exact<{
@@ -442,6 +474,69 @@ export type CreateTaskMutationResult =
 export type CreateTaskMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreateTaskMutation,
   CreateTaskMutationVariables
+>;
+export const SettingsDataDocument = gql`
+  query SettingsData {
+    user {
+      email
+      settings {
+        pomoLength
+        shortBreakLength
+        longBreakLength
+        isAlarmSound
+      }
+    }
+  }
+`;
+
+/**
+ * __useSettingsDataQuery__
+ *
+ * To run a query within a React component, call `useSettingsDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSettingsDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSettingsDataQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSettingsDataQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    SettingsDataQuery,
+    SettingsDataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return ApolloReactHooks.useQuery<
+    SettingsDataQuery,
+    SettingsDataQueryVariables
+  >(SettingsDataDocument, options);
+}
+export function useSettingsDataLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    SettingsDataQuery,
+    SettingsDataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return ApolloReactHooks.useLazyQuery<
+    SettingsDataQuery,
+    SettingsDataQueryVariables
+  >(SettingsDataDocument, options);
+}
+export type SettingsDataQueryHookResult = ReturnType<
+  typeof useSettingsDataQuery
+>;
+export type SettingsDataLazyQueryHookResult = ReturnType<
+  typeof useSettingsDataLazyQuery
+>;
+export type SettingsDataQueryResult = ApolloReactCommon.QueryResult<
+  SettingsDataQuery,
+  SettingsDataQueryVariables
 >;
 export const HomeScreenDocument = gql`
   query HomeScreen {
@@ -858,6 +953,84 @@ export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<
   RegisterMutation,
   RegisterMutationVariables
 >;
+export const UpdateSettingsDocument = gql`
+  mutation UpdateSettings(
+    $email: String!
+    $pomoLength: Int!
+    $shortBreakLength: Int!
+    $longBreakLength: Int!
+    $isAlarmSound: Boolean!
+  ) {
+    updateUser(
+      data: {
+        email: $email
+        settings: {
+          pomoLength: $pomoLength
+          shortBreakLength: $shortBreakLength
+          longBreakLength: $longBreakLength
+          isAlarmSound: $isAlarmSound
+        }
+      }
+    ) {
+      id
+      email
+      settings {
+        pomoLength
+        shortBreakLength
+        longBreakLength
+        isAlarmSound
+      }
+    }
+  }
+`;
+export type UpdateSettingsMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateSettingsMutation,
+  UpdateSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSettingsMutation, { data, loading, error }] = useUpdateSettingsMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      pomoLength: // value for 'pomoLength'
+ *      shortBreakLength: // value for 'shortBreakLength'
+ *      longBreakLength: // value for 'longBreakLength'
+ *      isAlarmSound: // value for 'isAlarmSound'
+ *   },
+ * });
+ */
+export function useUpdateSettingsMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    UpdateSettingsMutation,
+    UpdateSettingsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return ApolloReactHooks.useMutation<
+    UpdateSettingsMutation,
+    UpdateSettingsMutationVariables
+  >(UpdateSettingsDocument, options);
+}
+export type UpdateSettingsMutationHookResult = ReturnType<
+  typeof useUpdateSettingsMutation
+>;
+export type UpdateSettingsMutationResult =
+  ApolloReactCommon.MutationResult<UpdateSettingsMutation>;
+export type UpdateSettingsMutationOptions =
+  ApolloReactCommon.BaseMutationOptions<
+    UpdateSettingsMutation,
+    UpdateSettingsMutationVariables
+  >;
 export const WriteTokenDocument = gql`
   query WriteToken($id: Int!) {
     token

@@ -1,6 +1,8 @@
 import { ApolloError, gql } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSetRecoilState } from "recoil";
 import { RegisterMutationResult, useRegisterMutation } from "../GraphQL/types";
+import { userState } from "../Recoil";
 
 export const registerMutation = () => gql`
   mutation Register($email: String!, $password: String!) {
@@ -37,6 +39,7 @@ type UseRegister = {
 
 const useRegister = (): UseRegister => {
   const [registerOperation, { loading, error }] = useRegisterMutation();
+  const setUser = useSetRecoilState(userState);
 
   const register = async (
     email: string,
@@ -50,6 +53,9 @@ const useRegister = (): UseRegister => {
     });
     if (res.data?.register?.token) {
       await AsyncStorage.setItem("userToken", res.data.register.token);
+      setUser({
+        token: res.data.register.token,
+      });
     }
     return res.data;
   };

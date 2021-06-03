@@ -36,6 +36,7 @@
     "backend": "file:packages\\Backend",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-reanimated": "^2.2.0",
+    "recoil": "^0.3.1",
     "shared": "file:packages\\Shared"
   }
 }

@@ -1,15 +1,10 @@
-import { gql, useQuery } from "@apollo/client";
+import { useRecoilValue } from "recoil";
+import { userState } from "../Recoil";
 
 const useAuthState = () => {
-  const isLoggedIn = gql`
-    query isUserLoggedIn {
-      token @client
-    }
-  `;
+  const user = useRecoilValue(userState);
 
-  const { data } = useQuery(isLoggedIn);
-
-  return data?.token;
+  return user?.token;
 };
 
 export default useAuthState;
