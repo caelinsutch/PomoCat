@@ -85,24 +85,6 @@ const useTimer = (): UseTimer => {
     setTimeLeft(formatSeconds(totalSeconds));
   };
 
-  useEffect(() => {
-    if (data?.user?.timer) {
-      const {
-        user: { timer },
-      } = data;
-      if (timer?.type && !localTimerType) {
-        setLocalTimerType(timer.type);
-      }
-      if (!timer?.type && !localTimerType) {
-        setLocalTimerType(TimerType.Pomodoro);
-      }
-      if (timer?.endTime) {
-        setTimeLeftSeconds(dayjs(timer.endTime).diff(dayjs(), "seconds"));
-        setTimerRunning(true);
-      }
-    }
-  }, [data]);
-
   const updateTimerLeft = () => {
     if (data?.user?.timer?.endTime) {
       const endTime = data?.user?.timer?.endTime;
@@ -111,7 +93,9 @@ const useTimer = (): UseTimer => {
     }
   };
 
-  useInterval(updateTimerLeft, timerRunning ? 1000 : null);
+  const getAmount = () => (timerRunning ? 1000 : null);
+
+  const { start, stop } = useInterval(updateTimerLeft, getAmount());
 
   const handleTimerTypeChange = async (newType: TimerType) => {
     if (timeLeft === "00:00") {
@@ -127,6 +111,7 @@ const useTimer = (): UseTimer => {
         type: localTimerType,
       },
     });
+    start();
     await refetch();
   };
 
@@ -139,18 +124,46 @@ const useTimer = (): UseTimer => {
     await stopTimerOperation();
     setTimerRunning(false);
     setTimeLeft("00:00");
+    stop();
     await refetch();
   };
 
   const handleButtonClick = async () => {
     if (timerRunning) {
       setTimerRunning(false);
+      stop();
       await pauseTimer();
     } else {
       setTimerRunning(true);
       await startTimer();
     }
   };
+
+  useEffect(() => {
+    if (data?.user?.timer) {
+      const {
+        user: { timer },
+      } = data;
+      if (timer?.type && !localTimerType) {
+        setLocalTimerType(timer.type);
+      }
+      if (!timer?.type && !localTimerType) {
+        setLocalTimerType(TimerType.Pomodoro);
+      }
+      if (timer?.endTime) {
+        setTimeLeftSeconds(dayjs(timer.endTime).diff(dayjs(), "seconds"));
+        setTimerRunning(true);
+        start();
+      }
+      if (
+        timeLeft === "00:00" &&
+        timer.endTime &&
+        dayjs(timer.endTime).diff(dayjs(), "s") < 10
+      ) {
+        stopTimer();
+      }
+    }
+  }, [data]);
 
   return {
     stopTimer,
